@@ -103,6 +103,8 @@ boolean NewPing::ping_trigger() {
 }
 
 
+#ifdef ENABLE_TIMER_BASED_PING
+
 // ---------------------------------------------------------------------------
 // Timer interrupt ping methods (won't work with ATmega8 and ATmega128)
 // ---------------------------------------------------------------------------
@@ -215,6 +217,8 @@ ISR(TIMER2_COMPA_vect) {
 #endif
 	if(intFunc) intFunc(); // If wrapped function is set, call it.
 }
+
+#endif // ENABLE_TIMER_BASED_PING
 
 
 // ---------------------------------------------------------------------------

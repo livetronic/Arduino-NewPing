@@ -113,6 +113,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+// Uncomment the following line if you want to use ping_timer() 
+// #define ENABLE_TIMER_BASED_PING 1
+
 // Shoudln't need to changed these values unless you have a specific need to do so.
 #define MAX_SENSOR_DISTANCE 500 // Maximum sensor distance can be as high as 500cm, no reason to wait for ping longer than sound takes to travel this distance and back.
 #define US_ROUNDTRIP_IN 146     // Microseconds (uS) it takes sound to travel round-trip 1 inch (2 inches total), uses integer to save compiled code space.
@@ -138,15 +141,21 @@ class NewPing {
 		unsigned int ping_median(uint8_t it = 5);
 		unsigned int convert_in(unsigned int echoTime);
 		unsigned int convert_cm(unsigned int echoTime);
+
+#ifdef ENABLE_TIMER_BASED_PING
+
 		void ping_timer(void (*userFunc)(void));
 		boolean check_timer();
-		unsigned long ping_result;
 		static void timer_us(unsigned int frequency, void (*userFunc)(void));
 		static void timer_ms(unsigned long frequency, void (*userFunc)(void));
 		static void timer_stop();
+
+#endif // ENABLE_TIMER_BASED_PING
+
+
+		unsigned long ping_result;
 	private:
 		boolean ping_trigger();
-		boolean ping_wait_timer();
 		uint8_t _triggerBit;
 		uint8_t _echoBit;
 		volatile uint8_t *_triggerOutput;
@@ -154,6 +163,7 @@ class NewPing {
 		volatile uint8_t *_echoInput;
 		unsigned int _maxEchoTime;
 		unsigned long _max_time;
+
 		static void timer_setup();
 		static void timer_ms_cntdwn();
 };
